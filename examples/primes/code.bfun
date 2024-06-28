@@ -1,0 +1,31 @@
+import "structs/list"
+
+primes = list(2)
+
+func is_prime(n) {
+    # i would have used a for loop here but there are a bunch of memory leaks in the heap lol oops
+    # for loops create an iterator object, but it doesn't get freed anywhere hehe
+
+    # could have been:
+    # for (p in primes) { ... }
+
+    i = 0
+    while (i < len(primes)) {
+        p = primes[i]
+        if (p * p > n) 
+            return 1
+        if (n % p == 0) 
+            return 0
+        i += 1
+    }
+    println("ruh roh")
+    end
+}
+
+i = 3
+while (i < 500) {
+    if (is_prime(i)) 
+        primes.append(i)
+    i += 2
+}
+println(primes)

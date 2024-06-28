@@ -19,7 +19,9 @@ def in_():
 
 @bfasm_multi_ins()
 def outnum():
-    yield route_get_unit(compute.data1, "outnum_1", compute.data1)
+    code = bf_f(USIZE) + glide_fb(">[-]<" + bf_b(USIZE), 255, 255)
+    code += route_get_unit(compute.data1, "outnum_1", compute.data1)
+    yield code
 
     code = COMPUTE.copy(query.data[0], query.flag, query.empty[0])
     code += COMPUTE.foreach(query.flag, COMPUTE.inc(query.empty[0]) * 2 + COMPUTE.inc(query.empty[1]))
@@ -85,7 +87,7 @@ def outnum():
     keep_dividing += COMPUTE.move(compute.empty, compute.data1) 
     keep_dividing += route_next_ins("outnum_2")
 
-    finished_dividing += bf_f(USIZE) + glide_fb("[>]" + "+" * 48 + bf_glide_b(255, 1) + bf_b(USIZE), 255, 255)
+    finished_dividing += bf_f(USIZE) + glide_fb("[>]>[-]<" + "+" * 48 + bf_glide_b(255, 1) + bf_b(USIZE), 255, 255)
     finished_dividing += COMPUTE.foreach(query.data[-1], move_code := BFCode())
     move_code += bf_f(USIZE) + glide_fb("[>]<+" + bf_glide_b(255, 1) + bf_b(USIZE), 255, 255)
 

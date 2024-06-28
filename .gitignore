@@ -2,7 +2,11 @@
 /.vscode/
 __pycache__/
 
+# default build dir
 /c2bf-build/
+
+# example exes
+/examples/**/*.exe
 
 # pyinstaller dirs
 /build/

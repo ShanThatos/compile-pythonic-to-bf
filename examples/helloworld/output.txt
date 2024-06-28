@@ -1,0 +1,16 @@
+parsing code
+compiling bfun to bfasm
+encoding bfasm to bf
+compiling bf to c
+compiling c to binary [gcc]
+running
+-------
+Hello World!
+-------
+parse time:          0.284s
+compile time:        0.484s
+encode time:         0.807s
+bf code size:        115312
+bf to c time:        0.721s
+c to bin time:       0.558s
+run time:            0.218s

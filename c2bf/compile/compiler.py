@@ -38,7 +38,6 @@ class BFCompiler:
             print(*args)
 
     def run(self):
-        shutil.rmtree(self.output_path, ignore_errors=True)
         self.output_path.mkdir(parents=True, exist_ok=True)
 
         ast = self.__parse_resolve_imports()

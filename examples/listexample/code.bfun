@@ -1,0 +1,14 @@
+import "structs/range"
+import "structs/list"
+
+y = list("nested lists", 5, 4, 3, 2, 1)
+x = list("strings yay", y, 1, 1)
+
+for (i in range(30)) {
+    x.append(x[-1] + x[-2])
+    println(x)
+}
+
+for (el in x) {
+    println(el)
+}

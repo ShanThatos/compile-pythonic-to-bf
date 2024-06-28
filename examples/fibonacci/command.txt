@@ -1,0 +1,1 @@
+echo '100000000' | python .\launch.py -v -e .\examples\fibonacci\code.bfun -o .\examples\fibonacci\

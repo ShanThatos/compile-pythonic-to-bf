@@ -1,0 +1,547 @@
+# IMPORT: common.bfun from code.bfun
+# Essentials required for high-level language features
+
+# IMPORT: ./heap/malloc.bfun from common.bfun
+__heap_empty_block_metadata__: 0, 0
+__heap_empty_block__: 
+__heap_metadata_size__: 2 # <taken, size>
+
+inc __heap__
+mov __heap_guess__ __heap__
+
+jp __malloc_end__
+__heap_guess__: 0
+__heap_circled__: 0
+__malloc__:
+    # r0: size
+    # r1: heap_ptr
+    # r2: heap_element
+
+    if (r0 <= 0) 
+        ret __heap_empty_block__
+
+    mov r1 __heap_guess__
+    mov __heap_circled__ 0
+
+    __malloc_loop__:
+        get r2 r1
+        
+        # check block taken
+        if (r2) {
+            inc r1
+            get r2 r1
+            add r1 r2
+            inc r1
+            jp __malloc_loop_continue__
+        }
+
+        mov __heap_guess__ r1
+
+        inc r1
+
+        while (1) {
+            get r2 r1
+
+            mov rv r1
+            add rv r2
+            inc rv
+            get rv rv
+            if (rv) break
+            
+            mov rv r1
+            add rv r2
+            add rv 2
+            get rv rv
+            
+            add rv __heap_metadata_size__
+            add rv r2
+            set r1 rv
+        }
+
+        # check not enough space
+        if (r0 + __heap_metadata_size__ > r2) {
+            add r1 r2
+            inc r1
+            jp __malloc_loop_continue__
+        }
+
+        # mark block as taken
+        dec r1
+        set r1 1
+        
+        # check size match
+        if (r0 == r2) {
+            add r1 2
+            ret r1
+        }
+
+        # split block
+        
+        # set block size
+        inc r1
+        set r1 r0
+
+        # move to next block
+        inc r1
+        mov rv r1
+        add r1 r0
+
+        # mark block metadata
+        set r1 0
+        inc r1
+        sub r2 r0
+        sub r2 __heap_metadata_size__
+        set r1 r2
+
+        ret rv
+
+        __malloc_loop_continue__:
+            if (r1 >= __heap_end__) {
+                if (__heap_circled__)
+                    jp __malloc_loop_end__
+                mov r1 __heap__
+                mov __heap_circled__ 1
+            }
+            jp __malloc_loop__
+    __malloc_loop_end__:
+    
+    out 69
+    out 77
+    end
+__malloc_end__:
+
+func malloc(size) {
+    mov r0 size
+    call __malloc__
+    return rv
+}
+
+func calloc(size) {
+    mov r0 size
+    call __malloc__
+    mov r1 rv
+    mov r0 size
+    while (r0) {
+        set r1 0
+        inc r1
+        dec r0
+    }
+}
+
+# IMPORT: ./heap/free.bfun from common.bfun
+jp __free_end__
+__free__:
+    sub r0 2
+    set r0 0
+    ret 0
+__free_end__:
+
+func free(ptr) {
+    mov r0 ptr
+    call __free__
+}
+
+# IMPORT: ./obj/attr.bfun from common.bfun
+# r0 = object, r1 = name
+jp __findattr_end__
+__findattr_err__: 1
+__findattr__:
+    get r2 r0
+    while (1) {
+        inc r2
+        get r3 r2
+        if (r3) {
+            streq r1 r3
+            if (cr) {
+                # r0 + r2 - r0[0]
+                get r3 r0
+                add r0 r2
+                sub r0 r3
+                ret r0
+            }
+        } else break
+    }
+    if (__findattr_err__) {
+        out 69
+        out 65
+        end
+    }
+    ret 0
+__findattr_end__:
+
+# IMPORT: ./obj/item.bfun from common.bfun
+__$item_str__: 
+__$item_str_db__: 5, 36, 105, 116, 101, 109, 0
+add __$item_str__ 2
+
+__$item_args__:
+__$item_args_arr_size__: 1
+__$item_args_arr_db__: 0
+add __$item_args__ 2
+
+jp __findindex_end__
+__findindex_obj__: 0
+__findindex_index__: 0
+__findindex__:
+    push __findindex_obj__
+    push __findindex_index__
+    mov __findindex_obj__ r0
+    mov __findindex_index__ r1
+    mov __findattr_err__ 0
+    mov r1 __$item_str__
+    call __findattr__
+    mov __findattr_err__ 1
+    if (rv) {
+        get rv rv
+        push _call_args
+        push __$item_args_arr_db__
+
+        mov __$item_args_arr_db__ __findindex_index__
+        mov _call_args __$item_args__
+        call rv
+        
+        pop __$item_args_arr_db__
+        pop _call_args
+    } else {
+        mov rv __findindex_obj__
+        add rv __findindex_index__
+    }
+    pop __findindex_index__
+    pop __findindex_obj__
+    ret rv
+__findindex_end__:
+
+# IMPORT: ./obj/caller.bfun from common.bfun
+jp __make_caller_end__
+__caller_template__:
+    push this
+    mov this 0
+    call 0
+    pop this
+    ret rv
+__make_caller_this__: 0
+__make_caller_func__: 0
+__make_caller__:
+    mov __make_caller_this__ r0
+    mov __make_caller_func__ r1
+
+    mov r0 8
+    call __malloc__
+    set rv rv
+
+    mov r0 rv
+    inc r0
+    set r0 __make_caller_this__
+    inc r0
+    set r0 __make_caller_func__
+    
+    mov r1 __caller_template__
+
+    mov r3 5
+    while (r3) {
+        inc r0
+        inc r1
+        get r2 r1
+        set r0 r2
+        dec r3
+    }
+
+    mov r0 rv
+    
+    add r0 4
+    get r1 r0
+    rshift r1 _n_bit_size
+    lshift r1 _n_bit_size
+    add r1 rv
+    inc r1
+    set r0 r1
+    
+    inc r0
+    get r1 r0
+    add r1 rv
+    add r1 2
+    lshift r1 _n_bit_size
+    set r0 r1
+
+    ret rv
+__make_caller_end__:
+
+# IMPORT: ./obj/dunders.bfun from common.bfun
+# $new, $len, $iter, $has_next, $next, $print, $item
+
+func len(obj) {
+    return obj.$len()
+}
+
+func iter(obj) {
+    return obj.$iter()
+}
+
+func has_next(obj) {
+    return obj.$has_next()
+}
+
+func next(obj) {
+    return obj.$next()
+}
+
+# IMPORT: ./io/print.bfun from common.bfun
+jp __print_end__
+    __print_args__: 0
+    __print_num_args__: 0
+__print__:
+    push __print_num_args__
+    dec __print_args__
+    get __print_num_args__ __print_args__
+    while (__print_num_args__) {
+        inc __print_args__
+        get r0 __print_args__
+        getf cr r0
+        dec cr
+        not cr
+        if (cr) {
+            mov __findattr_err__ 0
+            r1 = r0.$print
+            mov __findattr_err__ 1
+            if (r1) {
+                r1()
+            } else {
+                get r0 __print_args__
+                outnum r0
+                out 69
+                out 80
+                end
+            }
+        } else {
+            outnum r0
+        }
+
+        dec __print_num_args__
+        if (__print_num_args__) 
+            out 32
+    }
+    pop __print_num_args__
+    ret 0
+__print_end__:
+
+variadic func print(args) {
+    # __print(args)
+    push __print_args__
+    mov __print_args__ args
+    call __print__
+    pop __print_args__
+}
+
+variadic func println(args) {
+    # __print(args)
+    push __print_args__
+    mov __print_args__ args
+    call __print__
+    pop __print_args__
+    out 10
+}
+
+# IMPORT: ./math/divmod.bfun from common.bfun
+jp __divmod_end__
+__divmod__:
+    # args: r0, r1
+    rv = 0
+    if (r0 < 0) {
+        neg r0
+        not rv
+    }
+    if (r1 < 0) {
+        neg r1
+        not rv
+    }
+
+    r2 = 1
+    while (r0 > r1) {
+        lshift r1 1
+        lshift r2 1
+    }
+
+    r3 = 0
+    while (r2) {
+        if (r0 >= r1) {
+            sub r0 r1
+            add r3 r2
+        } else {
+            rshift r2 1
+            if (r2)
+                rshift r1 1
+        }
+    }
+
+    if (rv) {
+        neg r3
+        if (r0) {
+            neg r0
+            add r0 r1
+        }
+    }
+    
+    ret r3
+__divmod_end__:
+
+# IMPORT: ./structs/string.bfun from common.bfun
+
+# Class str
+
+variadic func str(params) {
+    mov r0 5
+    call __malloc__
+    mov this rv
+    setf this 1
+    set this class_str__ryiyv
+    r1 = 0
+    r0 = this + 1    set r0 r1
+    mov r0 this
+    mov r1 str$$new
+    call __make_caller__
+    r0 = this + 2
+    set r0 rv
+    mov r0 this
+    mov r1 str$$len
+    call __make_caller__
+    r0 = this + 3
+    set r0 rv
+    mov r0 this
+    mov r1 str$$print
+    call __make_caller__
+    r0 = this + 4
+    set r0 rv
+    call str$$new
+    return this
+}
+class_str__ryiyv: 
+class_str_db__ryiyv: 0, 0, 0, 0, 0, 0
+inc class_str__ryiyv
+set class_str__ryiyv str
+inc class_str__ryiyv
+set class_str__ryiyv str_arr__qecei
+inc class_str__ryiyv
+set class_str__ryiyv str_new__vbamu
+inc class_str__ryiyv
+set class_str__ryiyv str_len__fewmc
+inc class_str__ryiyv
+set class_str__ryiyv str_print__nbbsd
+sub class_str__ryiyv 4
+
+    func str$$new(arr) {
+        this.__arr = arr
+    }
+
+    func str$$len() {
+        return this.__arr[-1]
+    }
+
+    func str$$print() {
+        arr = this.__arr
+        outstr arr
+    }
+
+# STRINGS
+str_hello_fi_instance__ngplp: 0
+str_hello_fi_instance__ngplp = str(str_hello_fi__ngplp)
+str_instance__jzhlx: 0
+str_instance__jzhlx = str(str__jzhlx)
+
+# IMPORT: io/input.bfun from code.bfun
+
+# IMPORT: heap/realloc.bfun from input.bfun
+
+# IMPORT: ./memcpy.bfun from realloc.bfun
+jp __memcpy_end__
+__memcpy__:
+    while (r2) {
+        get r3 r0
+        set r1 r3
+        inc r0
+        inc r1
+        dec r2
+    }
+    ret 0
+__memcpy_end__:
+
+func memcpy(src, dst, size) {
+    mov r0 src
+    mov r1 dst
+    mov r2 size
+    call __memcpy__
+}
+
+func realloc(ptr, size) {
+    mov r0 size
+    call __malloc__
+    new_ptr = rv
+    mov r0 ptr
+    mov r1 new_ptr
+    mov r2 size
+    orig_size = r0
+    dec orig_size
+    get orig_size orig_size
+    if (r2 < orig_size) {
+        r2 = orig_size
+    }
+    call __memcpy__
+    mov r0 ptr
+    call __free__
+    return new_ptr
+}
+
+func readchar() {
+    in r0
+    return r0
+}
+
+func readline() {
+    line = calloc(2)
+    i = 0
+    char = 0
+    while (1) {
+        in char
+        if (char == 10) break
+        if (i == line[-1]) {
+            line = realloc(line, line[-1] + 10)
+        }
+        line[i] = char
+        inc i
+    }
+
+    if (i == line[-1]) {
+        line = realloc(line, line[-1] + 1)
+    }
+    line[i] = 0
+    return str(line)
+}
+
+func readint() {
+    x = 0
+    isneg = 0
+    char = 0
+    in char
+    if (char == 45) {
+        isneg = 1
+        in char
+    }
+    while (char >= 48 and char <= 57) {
+        x *= 10
+        x += char - 48
+        in char
+    }
+    if (isneg) {
+        neg x
+    }
+    return x
+}
+println(str_hello_fi_instance__ngplp)
+stop = readint()
+a = 1
+b = 1
+while (a < stop) {
+    print(a, str_instance__jzhlx)
+    c = a + b
+    a = b
+    b = c
+}

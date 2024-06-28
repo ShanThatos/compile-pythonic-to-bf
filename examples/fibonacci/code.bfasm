@@ -1,0 +1,1231 @@
+func_malloc__mxluf: 0
+func_calloc__ogsnk: 0
+func_free__iowct: 0
+func_len__fcsmv: 0
+func_iter__toygf: 0
+func_has_next__armfe: 0
+func_next__cmecc: 0
+func_print__icpcm: 0
+func_println__qhpfo: 0
+func_str__bysxk: 0
+func_str$$new__gwiuq: 0
+func_str$$len__chfdj: 0
+func_str$$print__klnnf: 0
+func_memcpy__eutjj: 0
+func_realloc__bknai: 0
+func_readchar__jalsw: 0
+func_readline__sppat: 0
+func_readint__bedcn: 0
+var_str_hello_fi_instance__ngplp__jnjdy: 0
+var_str_instance__jzhlx__iwtaq: 0
+var_stop__wzkrb: 0
+var_a__gvajq: 0
+var_b__budsh: 0
+var_c__lhcmu: 0
+str_len__fewmc:
+str_len_db__fewmc: 4, 36, 108, 101, 110, 0
+add str_len__fewmc 2
+str_iter__ztbyp:
+str_iter_db__ztbyp: 5, 36, 105, 116, 101, 114, 0
+add str_iter__ztbyp 2
+str_hasnext__skurh:
+str_hasnext_db__skurh: 9, 36, 104, 97, 115, 95, 110, 101, 120, 116, 0
+add str_hasnext__skurh 2
+str_next__vezjg:
+str_next_db__vezjg: 5, 36, 110, 101, 120, 116, 0
+add str_next__vezjg 2
+str_print__nbbsd:
+str_print_db__nbbsd: 6, 36, 112, 114, 105, 110, 116, 0
+add str_print__nbbsd 2
+str_arr__qecei:
+str_arr_db__qecei: 5, 95, 95, 97, 114, 114, 0
+add str_arr__qecei 2
+str_new__vbamu:
+str_new_db__vbamu: 4, 36, 110, 101, 119, 0
+add str_new__vbamu 2
+str_hello_fi__ngplp:
+str_hello_fi_db__ngplp: 16, 72, 101, 108, 108, 111, 32, 102, 105, 98, 111, 110, 97, 99, 99, 105, 33, 0
+add str_hello_fi__ngplp 2
+str__jzhlx:
+str_db__jzhlx: 0, 0
+add str__jzhlx 2
+
+# IMPORT: common.bfun from code.bfun
+# Essentials required for high-level language features
+
+# IMPORT: ./heap/malloc.bfun from common.bfun
+__heap_empty_block_metadata__: 0, 0
+__heap_empty_block__: 
+__heap_metadata_size__: 2 # <taken, size>
+
+inc __heap__
+mov __heap_guess__ __heap__
+
+jp __malloc_end__
+__heap_guess__: 0
+__heap_circled__: 0
+__malloc__:
+    # r0: size
+    # r1: heap_ptr
+    # r2: heap_element
+# if statement
+	# expr: r0 <= 0
+		cmp 0 r0
+		norm cr
+jpz if_end__rndqo cr
+ret __heap_empty_block__
+if_end__rndqo:
+
+    mov r1 __heap_guess__
+    mov __heap_circled__ 0
+
+    __malloc_loop__:
+        get r2 r1
+        
+        # check block taken
+# if statement
+jpz if_end__tldpx r2
+	inc r1
+	get r2 r1
+	add r1 r2
+	inc r1
+	jp __malloc_loop_continue__
+if_end__tldpx:
+
+        mov __heap_guess__ r1
+
+        inc r1
+# while loop
+while_start__baczq:
+jpz while_end__axwwf 1
+	get r2 r1
+	mov rv r1
+	add rv r2
+	inc rv
+	get rv rv
+	# if statement
+	jpz if_end__vbkvb rv
+		# break
+		jp while_end__axwwf
+	if_end__vbkvb:
+	mov rv r1
+	add rv r2
+	add rv 2
+	get rv rv
+	add rv __heap_metadata_size__
+	add rv r2
+	set r1 rv
+jp while_start__baczq
+while_end__axwwf:
+
+        # check not enough space
+# if statement
+	# expr: r0 + __heap_metadata_size__ > r2
+			mov e1 r0
+			add e1 __heap_metadata_size__
+		cmp r2 e1
+		not cr
+jpz if_end__luwwa cr
+	add r1 r2
+	inc r1
+	jp __malloc_loop_continue__
+if_end__luwwa:
+
+        # mark block as taken
+        dec r1
+        set r1 1
+        
+        # check size match
+# if statement
+	# expr: r0 == r2
+		cmp r0 r2
+		dec cr
+		not cr
+jpz if_end__lffpi cr
+	add r1 2
+	ret r1
+if_end__lffpi:
+
+        # split block
+        
+        # set block size
+        inc r1
+        set r1 r0
+
+        # move to next block
+        inc r1
+        mov rv r1
+        add r1 r0
+
+        # mark block metadata
+        set r1 0
+        inc r1
+        sub r2 r0
+        sub r2 __heap_metadata_size__
+        set r1 r2
+
+        ret rv
+
+        __malloc_loop_continue__:
+# if statement
+	# expr: r1 >= __heap_end__
+		cmp r1 __heap_end__
+		norm cr
+jpz if_end__aacdd cr
+	# if statement
+	jpz if_end__mfrlu __heap_circled__
+	jp __malloc_loop_end__
+	if_end__mfrlu:
+	mov r1 __heap__
+	mov __heap_circled__ 1
+if_end__aacdd:
+            jp __malloc_loop__
+    __malloc_loop_end__:
+    
+    out 69
+    out 77
+    end
+__malloc_end__:
+# function func_malloc__mxluf
+mov func_malloc__mxluf func_malloc_start__mxluf
+jp func_malloc_end__mxluf
+	param_size__eewca: 0
+func_malloc_start__mxluf:
+	push param_size__eewca
+	get param_size__eewca _call_args
+	sub _call_args 0
+	mov r0 param_size__eewca
+	call __malloc__
+	# return
+	mov rv rv
+	jp func_malloc_return__mxluf
+	func_malloc_return__mxluf:
+	pop param_size__eewca
+	ret rv
+func_malloc_end__mxluf:
+# function func_calloc__ogsnk
+mov func_calloc__ogsnk func_calloc_start__ogsnk
+jp func_calloc_end__ogsnk
+	param_size__epyyh: 0
+func_calloc_start__ogsnk:
+	push param_size__epyyh
+	get param_size__epyyh _call_args
+	sub _call_args 0
+	mov r0 param_size__epyyh
+	call __malloc__
+	mov r1 rv
+	mov r0 param_size__epyyh
+	# while loop
+	while_start__sdvcj:
+	jpz while_end__cznvl r0
+		set r1 0
+		inc r1
+		dec r0
+	jp while_start__sdvcj
+	while_end__cznvl:
+	func_calloc_return__ogsnk:
+	pop param_size__epyyh
+	ret rv
+func_calloc_end__ogsnk:
+
+# IMPORT: ./heap/free.bfun from common.bfun
+jp __free_end__
+__free__:
+    sub r0 2
+    set r0 0
+    ret 0
+__free_end__:
+# function func_free__iowct
+mov func_free__iowct func_free_start__iowct
+jp func_free_end__iowct
+	param_ptr__bqomz: 0
+func_free_start__iowct:
+	push param_ptr__bqomz
+	get param_ptr__bqomz _call_args
+	sub _call_args 0
+	mov r0 param_ptr__bqomz
+	call __free__
+	func_free_return__iowct:
+	pop param_ptr__bqomz
+	ret rv
+func_free_end__iowct:
+
+# IMPORT: ./obj/attr.bfun from common.bfun
+# r0 = object, r1 = name
+jp __findattr_end__
+__findattr_err__: 1
+__findattr__:
+    get r2 r0
+# while loop
+while_start__fzxgw:
+jpz while_end__cnnrd 1
+	inc r2
+	get r3 r2
+	# if-else statement
+	jpz else__fpqjj r3
+		streq r1 r3
+		# if statement
+		jpz if_end__adqqp cr
+			# r0 + r2 - r0[0]
+			get r3 r0
+			add r0 r2
+			sub r0 r3
+			ret r0
+		if_end__adqqp:
+	jp if_end__pcxxg
+	else__fpqjj:
+		# break
+		jp while_end__cnnrd
+	if_end__pcxxg:
+jp while_start__fzxgw
+while_end__cnnrd:
+# if statement
+jpz if_end__qmvsq __findattr_err__
+	out 69
+	out 65
+	end
+if_end__qmvsq:
+    ret 0
+__findattr_end__:
+
+# IMPORT: ./obj/item.bfun from common.bfun
+__$item_str__: 
+__$item_str_db__: 5, 36, 105, 116, 101, 109, 0
+add __$item_str__ 2
+
+__$item_args__:
+__$item_args_arr_size__: 1
+__$item_args_arr_db__: 0
+add __$item_args__ 2
+
+jp __findindex_end__
+__findindex_obj__: 0
+__findindex_index__: 0
+__findindex__:
+    push __findindex_obj__
+    push __findindex_index__
+    mov __findindex_obj__ r0
+    mov __findindex_index__ r1
+    mov __findattr_err__ 0
+    mov r1 __$item_str__
+    call __findattr__
+    mov __findattr_err__ 1
+# if-else statement
+jpz else__axtrb rv
+	get rv rv
+	push _call_args
+	push __$item_args_arr_db__
+	mov __$item_args_arr_db__ __findindex_index__
+	mov _call_args __$item_args__
+	call rv
+	pop __$item_args_arr_db__
+	pop _call_args
+jp if_end__cguam
+else__axtrb:
+	mov rv __findindex_obj__
+	add rv __findindex_index__
+if_end__cguam:
+    pop __findindex_index__
+    pop __findindex_obj__
+    ret rv
+__findindex_end__:
+
+# IMPORT: ./obj/caller.bfun from common.bfun
+jp __make_caller_end__
+__caller_template__:
+    push this
+    mov this 0
+    call 0
+    pop this
+    ret rv
+__make_caller_this__: 0
+__make_caller_func__: 0
+__make_caller__:
+    mov __make_caller_this__ r0
+    mov __make_caller_func__ r1
+
+    mov r0 8
+    call __malloc__
+    set rv rv
+
+    mov r0 rv
+    inc r0
+    set r0 __make_caller_this__
+    inc r0
+    set r0 __make_caller_func__
+    
+    mov r1 __caller_template__
+
+    mov r3 5
+# while loop
+while_start__hribg:
+jpz while_end__pvvku r3
+	inc r0
+	inc r1
+	get r2 r1
+	set r0 r2
+	dec r3
+jp while_start__hribg
+while_end__pvvku:
+
+    mov r0 rv
+    
+    add r0 4
+    get r1 r0
+    rshift r1 _n_bit_size
+    lshift r1 _n_bit_size
+    add r1 rv
+    inc r1
+    set r0 r1
+    
+    inc r0
+    get r1 r0
+    add r1 rv
+    add r1 2
+    lshift r1 _n_bit_size
+    set r0 r1
+
+    ret rv
+__make_caller_end__:
+
+# IMPORT: ./obj/dunders.bfun from common.bfun
+# $new, $len, $iter, $has_next, $next, $print, $item
+# function func_len__fcsmv
+mov func_len__fcsmv func_len_start__fcsmv
+jp func_len_end__fcsmv
+	param_obj__hedhu: 0
+func_len_start__fcsmv:
+	push param_obj__hedhu
+	get param_obj__hedhu _call_args
+	sub _call_args 0
+	# return
+		# expr: obj.$len()
+			mov r0 param_obj__hedhu
+			mov r1 str_len__fewmc
+			call __findattr__
+			get e0 rv
+			push _call_args
+			mov _call_args __heap_empty_block__
+			call e0
+			mov e1 rv
+			pop _call_args
+	mov rv e1
+	jp func_len_return__fcsmv
+	func_len_return__fcsmv:
+	pop param_obj__hedhu
+	ret rv
+func_len_end__fcsmv:
+# function func_iter__toygf
+mov func_iter__toygf func_iter_start__toygf
+jp func_iter_end__toygf
+	param_obj__jwoas: 0
+func_iter_start__toygf:
+	push param_obj__jwoas
+	get param_obj__jwoas _call_args
+	sub _call_args 0
+	# return
+		# expr: obj.$iter()
+			mov r0 param_obj__jwoas
+			mov r1 str_iter__ztbyp
+			call __findattr__
+			get e2 rv
+			push _call_args
+			mov _call_args __heap_empty_block__
+			call e2
+			mov e0 rv
+			pop _call_args
+	mov rv e0
+	jp func_iter_return__toygf
+	func_iter_return__toygf:
+	pop param_obj__jwoas
+	ret rv
+func_iter_end__toygf:
+# function func_has_next__armfe
+mov func_has_next__armfe func_has_next_start__armfe
+jp func_has_next_end__armfe
+	param_obj__qggel: 0
+func_has_next_start__armfe:
+	push param_obj__qggel
+	get param_obj__qggel _call_args
+	sub _call_args 0
+	# return
+		# expr: obj.$has_next()
+			mov r0 param_obj__qggel
+			mov r1 str_hasnext__skurh
+			call __findattr__
+			get e1 rv
+			push _call_args
+			mov _call_args __heap_empty_block__
+			call e1
+			mov e2 rv
+			pop _call_args
+	mov rv e2
+	jp func_has_next_return__armfe
+	func_has_next_return__armfe:
+	pop param_obj__qggel
+	ret rv
+func_has_next_end__armfe:
+# function func_next__cmecc
+mov func_next__cmecc func_next_start__cmecc
+jp func_next_end__cmecc
+	param_obj__gfitj: 0
+func_next_start__cmecc:
+	push param_obj__gfitj
+	get param_obj__gfitj _call_args
+	sub _call_args 0
+	# return
+		# expr: obj.$next()
+			mov r0 param_obj__gfitj
+			mov r1 str_next__vezjg
+			call __findattr__
+			get e0 rv
+			push _call_args
+			mov _call_args __heap_empty_block__
+			call e0
+			mov e1 rv
+			pop _call_args
+	mov rv e1
+	jp func_next_return__cmecc
+	func_next_return__cmecc:
+	pop param_obj__gfitj
+	ret rv
+func_next_end__cmecc:
+
+# IMPORT: ./io/print.bfun from common.bfun
+jp __print_end__
+    __print_args__: 0
+    __print_num_args__: 0
+__print__:
+    push __print_num_args__
+    dec __print_args__
+    get __print_num_args__ __print_args__
+# while loop
+while_start__apufd:
+jpz while_end__kcelb __print_num_args__
+	inc __print_args__
+	get r0 __print_args__
+	getf cr r0
+	dec cr
+	not cr
+	# if-else statement
+	jpz else__xtqwe cr
+		mov __findattr_err__ 0
+			# expr: r0.$print
+				mov r0 r0
+				mov r1 str_print__nbbsd
+				call __findattr__
+				get e2 rv
+		mov r1 e2
+		mov __findattr_err__ 1
+		# if-else statement
+		jpz else__imnuu r1
+			# expr: r1()
+				push _call_args
+				mov _call_args __heap_empty_block__
+				call r1
+				mov e0 rv
+				pop _call_args
+		jp if_end__szzrf
+		else__imnuu:
+			get r0 __print_args__
+			outnum r0
+			out 69
+			out 80
+			end
+		if_end__szzrf:
+	jp if_end__supkw
+	else__xtqwe:
+		outnum r0
+	if_end__supkw:
+	dec __print_num_args__
+	# if statement
+	jpz if_end__bkbmr __print_num_args__
+	out 32
+	if_end__bkbmr:
+jp while_start__apufd
+while_end__kcelb:
+    pop __print_num_args__
+    ret 0
+__print_end__:
+# function func_print__icpcm
+mov func_print__icpcm func_print_start__icpcm
+jp func_print_end__icpcm
+	param_args__zuobx: 0
+func_print_start__icpcm:
+	push param_args__zuobx
+	mov param_args__zuobx _call_args
+	# __print(args)
+	push __print_args__
+	mov __print_args__ param_args__zuobx
+	call __print__
+	pop __print_args__
+	func_print_return__icpcm:
+	pop param_args__zuobx
+	ret rv
+func_print_end__icpcm:
+# function func_println__qhpfo
+mov func_println__qhpfo func_println_start__qhpfo
+jp func_println_end__qhpfo
+	param_args__inpcn: 0
+func_println_start__qhpfo:
+	push param_args__inpcn
+	mov param_args__inpcn _call_args
+	# __print(args)
+	push __print_args__
+	mov __print_args__ param_args__inpcn
+	call __print__
+	pop __print_args__
+	out 10
+	func_println_return__qhpfo:
+	pop param_args__inpcn
+	ret rv
+func_println_end__qhpfo:
+
+# IMPORT: ./math/divmod.bfun from common.bfun
+jp __divmod_end__
+__divmod__:
+    # args: r0, r1
+mov rv 0
+# if statement
+	# expr: r0 < 0
+		cmp r0 0
+		not cr
+jpz if_end__nwowm cr
+	neg r0
+	not rv
+if_end__nwowm:
+# if statement
+	# expr: r1 < 0
+		cmp r1 0
+		not cr
+jpz if_end__dfkzi cr
+	neg r1
+	not rv
+if_end__dfkzi:
+mov r2 1
+# while loop
+while_start__paqkp:
+	# expr: r0 > r1
+		cmp r1 r0
+		not cr
+jpz while_end__ikpjs cr
+	lshift r1 1
+	lshift r2 1
+jp while_start__paqkp
+while_end__ikpjs:
+mov r3 0
+# while loop
+while_start__naufd:
+jpz while_end__neilp r2
+	# if-else statement
+		# expr: r0 >= r1
+			cmp r0 r1
+			norm cr
+	jpz else__nafwo cr
+		sub r0 r1
+		add r3 r2
+	jp if_end__dxbnx
+	else__nafwo:
+		rshift r2 1
+		# if statement
+		jpz if_end__tugux r2
+		rshift r1 1
+		if_end__tugux:
+	if_end__dxbnx:
+jp while_start__naufd
+while_end__neilp:
+# if statement
+jpz if_end__ifkzt rv
+	neg r3
+	# if statement
+	jpz if_end__tcbpg r0
+		neg r0
+		add r0 r1
+	if_end__tcbpg:
+if_end__ifkzt:
+    
+    ret r3
+__divmod_end__:
+
+# IMPORT: ./structs/string.bfun from common.bfun
+
+# Class str
+# function func_str__bysxk
+mov func_str__bysxk func_str_start__bysxk
+jp func_str_end__bysxk
+	param_params__uezah: 0
+func_str_start__bysxk:
+	push param_params__uezah
+	mov param_params__uezah _call_args
+	mov r0 5
+	call __malloc__
+	mov this rv
+	setf this 1
+	set this class_str__ryiyv
+	mov r1 0
+		# expr: this + 1
+			mov e2 this
+			inc e2
+	mov r0 e2
+	set r0 r1
+	mov r0 this
+	mov r1 func_str$$new__gwiuq
+	call __make_caller__
+		# expr: this + 2
+			mov e0 this
+			add e0 2
+	mov r0 e0
+	set r0 rv
+	mov r0 this
+	mov r1 func_str$$len__chfdj
+	call __make_caller__
+		# expr: this + 3
+			mov e1 this
+			add e1 3
+	mov r0 e1
+	set r0 rv
+	mov r0 this
+	mov r1 func_str$$print__klnnf
+	call __make_caller__
+		# expr: this + 4
+			mov e2 this
+			add e2 4
+	mov r0 e2
+	set r0 rv
+	call func_str$$new__gwiuq
+	# return
+	mov rv this
+	jp func_str_return__bysxk
+	func_str_return__bysxk:
+	pop param_params__uezah
+	ret rv
+func_str_end__bysxk:
+class_str__ryiyv: 
+class_str_db__ryiyv: 0, 0, 0, 0, 0, 0
+inc class_str__ryiyv
+set class_str__ryiyv func_str__bysxk
+inc class_str__ryiyv
+set class_str__ryiyv str_arr__qecei
+inc class_str__ryiyv
+set class_str__ryiyv str_new__vbamu
+inc class_str__ryiyv
+set class_str__ryiyv str_len__fewmc
+inc class_str__ryiyv
+set class_str__ryiyv str_print__nbbsd
+sub class_str__ryiyv 4
+# function func_str$$new__gwiuq
+mov func_str$$new__gwiuq func_str$$new_start__gwiuq
+jp func_str$$new_end__gwiuq
+	param_arr__qdefv: 0
+func_str$$new_start__gwiuq:
+	push param_arr__qdefv
+	get param_arr__qdefv _call_args
+	sub _call_args 0
+	mov e1 this
+	inc e1
+	set e1 param_arr__qdefv
+	func_str$$new_return__gwiuq:
+	pop param_arr__qdefv
+	ret rv
+func_str$$new_end__gwiuq:
+# function func_str$$len__chfdj
+mov func_str$$len__chfdj func_str$$len_start__chfdj
+jp func_str$$len_end__chfdj
+func_str$$len_start__chfdj:
+	# return
+		# expr: this.__arr[-1]
+			mov e2 this
+			add e2 1
+			get e2 e2
+				# expr: -1
+					mov e0 1
+					neg e0
+			getf cr e2
+			dec cr
+			jpz dunder_index___bslso cr
+			mov rv e2
+			add rv e0
+			jp index_end___owsjg
+			dunder_index___bslso:
+			mov r0 e2
+			mov r1 e0
+			call __findindex__
+			index_end___owsjg:
+			get e1 rv
+	mov rv e1
+	jp func_str$$len_return__chfdj
+	func_str$$len_return__chfdj:
+	ret rv
+func_str$$len_end__chfdj:
+# function func_str$$print__klnnf
+mov func_str$$print__klnnf func_str$$print_start__klnnf
+jp func_str$$print_end__klnnf
+	var_arr__bukzo: 0
+func_str$$print_start__klnnf:
+	push var_arr__bukzo
+	mov var_arr__bukzo 0
+		# expr: this.__arr
+			mov e2 this
+			inc e2
+			get e2 e2
+	mov var_arr__bukzo e2
+	outstr var_arr__bukzo
+	func_str$$print_return__klnnf:
+	pop var_arr__bukzo
+	ret rv
+func_str$$print_end__klnnf:
+
+# STRINGS
+str_hello_fi_instance__ngplp: 0
+	# expr: str(str_hello_fi__ngplp)
+		push _call_args
+		mov r0 1
+		call __malloc__
+		mov _call_args rv
+		# arg 0
+		set _call_args str_hello_fi__ngplp
+		call func_str__bysxk
+		mov e0 rv
+		mov r0 _call_args
+		call __free__
+		pop _call_args
+mov str_hello_fi_instance__ngplp e0
+str_instance__jzhlx: 0
+	# expr: str(str__jzhlx)
+		push _call_args
+		mov r0 1
+		call __malloc__
+		mov _call_args rv
+		# arg 0
+		set _call_args str__jzhlx
+		call func_str__bysxk
+		mov e1 rv
+		mov r0 _call_args
+		call __free__
+		pop _call_args
+mov str_instance__jzhlx e1
+
+# IMPORT: io/input.bfun from code.bfun
+
+# IMPORT: heap/realloc.bfun from input.bfun
+
+# IMPORT: ./memcpy.bfun from realloc.bfun
+jp __memcpy_end__
+__memcpy__:
+# while loop
+while_start__xhsmn:
+jpz while_end__oudap r2
+	get r3 r0
+	set r1 r3
+	inc r0
+	inc r1
+	dec r2
+jp while_start__xhsmn
+while_end__oudap:
+    ret 0
+__memcpy_end__:
+# function func_memcpy__eutjj
+mov func_memcpy__eutjj func_memcpy_start__eutjj
+jp func_memcpy_end__eutjj
+	param_src__sjrrq: 0
+	param_dst__bswan: 0
+	param_size__xxexw: 0
+func_memcpy_start__eutjj:
+	push param_src__sjrrq
+	push param_dst__bswan
+	push param_size__xxexw
+	get param_src__sjrrq _call_args
+	inc _call_args
+	get param_dst__bswan _call_args
+	inc _call_args
+	get param_size__xxexw _call_args
+	sub _call_args 2
+	mov r0 param_src__sjrrq
+	mov r1 param_dst__bswan
+	mov r2 param_size__xxexw
+	call __memcpy__
+	func_memcpy_return__eutjj:
+	pop param_size__xxexw
+	pop param_dst__bswan
+	pop param_src__sjrrq
+	ret rv
+func_memcpy_end__eutjj:
+# function func_realloc__bknai
+mov func_realloc__bknai func_realloc_start__bknai
+jp func_realloc_end__bknai
+	param_ptr__whjix: 0
+	param_size__sfivl: 0
+	var_new_ptr__dmets: 0
+	var_orig_size__iibfx: 0
+func_realloc_start__bknai:
+	push param_ptr__whjix
+	push param_size__sfivl
+	push var_new_ptr__dmets
+	push var_orig_size__iibfx
+	get param_ptr__whjix _call_args
+	inc _call_args
+	get param_size__sfivl _call_args
+	sub _call_args 1
+	mov var_new_ptr__dmets 0
+	mov var_orig_size__iibfx 0
+	mov r0 param_size__sfivl
+	call __malloc__
+	mov var_new_ptr__dmets rv
+	mov r0 param_ptr__whjix
+	mov r1 var_new_ptr__dmets
+	mov r2 param_size__sfivl
+	mov var_orig_size__iibfx r0
+	dec var_orig_size__iibfx
+	get var_orig_size__iibfx var_orig_size__iibfx
+	# if statement
+		# expr: r2 < orig_size
+			cmp r2 var_orig_size__iibfx
+			not cr
+	jpz if_end__faubv cr
+		mov r2 var_orig_size__iibfx
+	if_end__faubv:
+	call __memcpy__
+	mov r0 param_ptr__whjix
+	call __free__
+	# return
+	mov rv var_new_ptr__dmets
+	jp func_realloc_return__bknai
+	func_realloc_return__bknai:
+	pop var_orig_size__iibfx
+	pop var_new_ptr__dmets
+	pop param_size__sfivl
+	pop param_ptr__whjix
+	ret rv
+func_realloc_end__bknai:
+# function func_readchar__jalsw
+mov func_readchar__jalsw func_readchar_start__jalsw
+jp func_readchar_end__jalsw
+func_readchar_start__jalsw:
+	in r0
+	# return
+	mov rv r0
+	jp func_readchar_return__jalsw
+	func_readchar_return__jalsw:
+	ret rv
+func_readchar_end__jalsw:
+# function func_readline__sppat
+mov func_readline__sppat func_readline_start__sppat
+jp func_readline_end__sppat
+	var_line__khqvd: 0
+	var_i__cwbro: 0
+	var_char__ssuxi: 0
+func_readline_start__sppat:
+	push var_line__khqvd
+	push var_i__cwbro
+	push var_char__ssuxi
+	mov var_line__khqvd 0
+	mov var_i__cwbro 0
+	mov var_char__ssuxi 0
+		# expr: calloc(2)
+			push _call_args
+			mov r0 1
+			call __malloc__
+			mov _call_args rv
+			# arg 0
+			set _call_args 2
+			call func_calloc__ogsnk
+			mov e2 rv
+			mov r0 _call_args
+			call __free__
+			pop _call_args
+	mov var_line__khqvd e2
+	mov var_i__cwbro 0
+	mov var_char__ssuxi 0
+	# while loop
+	while_start__dxqqz:
+	jpz while_end__aaboi 1
+		in var_char__ssuxi
+		# if statement
+			# expr: char == 10
+				cmp var_char__ssuxi 10
+				dec cr
+				not cr
+		jpz if_end__cmsgk cr
+			# break
+			jp while_end__aaboi
+		if_end__cmsgk:
+		# if statement
+			# expr: i == line[-1]
+						# expr: -1
+							mov e0 1
+							neg e0
+					getf cr var_line__khqvd
+					dec cr
+					jpz dunder_index___ygilq cr
+					mov rv var_line__khqvd
+					add rv e0
+					jp index_end___fqhpr
+					dunder_index___ygilq:
+					mov r0 var_line__khqvd
+					mov r1 e0
+					call __findindex__
+					index_end___fqhpr:
+					get e1 rv
+				cmp var_i__cwbro e1
+				dec cr
+				not cr
+		jpz if_end__vkalk cr
+				# expr: realloc(line, line[-1] + 10)
+					push _call_args
+					mov r0 2
+					call __malloc__
+					mov _call_args rv
+					# arg 0
+					set _call_args var_line__khqvd
+					inc _call_args
+					# arg 1
+						# expr: line[-1] + 10
+									# expr: -1
+										mov e0 1
+										neg e0
+								getf cr var_line__khqvd
+								dec cr
+								jpz dunder_index___grhkh cr
+								mov rv var_line__khqvd
+								add rv e0
+								jp index_end___piomw
+								dunder_index___grhkh:
+								mov r0 var_line__khqvd
+								mov r1 e0
+								call __findindex__
+								index_end___piomw:
+								get e1 rv
+							mov e0 e1
+							add e0 10
+					set _call_args e0
+					dec _call_args
+					call func_realloc__bknai
+					mov e2 rv
+					mov r0 _call_args
+					call __free__
+					pop _call_args
+			mov var_line__khqvd e2
+		if_end__vkalk:
+		mov e0 var_line__khqvd
+		getf cr e0
+		dec cr
+		jpz dunder_index___rgdny cr
+		mov rv e0
+		add rv var_i__cwbro
+		jp index_end___xoooi
+		dunder_index___rgdny:
+		mov r0 e0
+		mov r1 var_i__cwbro
+		call __findindex__
+		index_end___xoooi:
+		mov e2 rv
+		set e2 var_char__ssuxi
+		inc var_i__cwbro
+	jp while_start__dxqqz
+	while_end__aaboi:
+	# if statement
+		# expr: i == line[-1]
+					# expr: -1
+						mov e0 1
+						neg e0
+				getf cr var_line__khqvd
+				dec cr
+				jpz dunder_index___zfaxy cr
+				mov rv var_line__khqvd
+				add rv e0
+				jp index_end___xyntr
+				dunder_index___zfaxy:
+				mov r0 var_line__khqvd
+				mov r1 e0
+				call __findindex__
+				index_end___xyntr:
+				get e1 rv
+			cmp var_i__cwbro e1
+			dec cr
+			not cr
+	jpz if_end__xuuee cr
+			# expr: realloc(line, line[-1] + 1)
+				push _call_args
+				mov r0 2
+				call __malloc__
+				mov _call_args rv
+				# arg 0
+				set _call_args var_line__khqvd
+				inc _call_args
+				# arg 1
+					# expr: line[-1] + 1
+								# expr: -1
+									mov e0 1
+									neg e0
+							getf cr var_line__khqvd
+							dec cr
+							jpz dunder_index___wgpxl cr
+							mov rv var_line__khqvd
+							add rv e0
+							jp index_end___vegci
+							dunder_index___wgpxl:
+							mov r0 var_line__khqvd
+							mov r1 e0
+							call __findindex__
+							index_end___vegci:
+							get e1 rv
+						inc e1
+				set _call_args e1
+				dec _call_args
+				call func_realloc__bknai
+				mov e2 rv
+				mov r0 _call_args
+				call __free__
+				pop _call_args
+		mov var_line__khqvd e2
+	if_end__xuuee:
+	mov e0 var_line__khqvd
+	getf cr e0
+	dec cr
+	jpz dunder_index___mfzja cr
+	mov rv e0
+	add rv var_i__cwbro
+	jp index_end___uilvl
+	dunder_index___mfzja:
+	mov r0 e0
+	mov r1 var_i__cwbro
+	call __findindex__
+	index_end___uilvl:
+	mov e2 rv
+	set e2 0
+	# return
+		# expr: str(line)
+			push _call_args
+			mov r0 1
+			call __malloc__
+			mov _call_args rv
+			# arg 0
+			set _call_args var_line__khqvd
+			sub _call_args 0
+			call func_str__bysxk
+			mov e0 rv
+			mov r0 _call_args
+			call __free__
+			pop _call_args
+	mov rv e0
+	jp func_readline_return__sppat
+	func_readline_return__sppat:
+	pop var_char__ssuxi
+	pop var_i__cwbro
+	pop var_line__khqvd
+	ret rv
+func_readline_end__sppat:
+# function func_readint__bedcn
+mov func_readint__bedcn func_readint_start__bedcn
+jp func_readint_end__bedcn
+	var_x__afajo: 0
+	var_isneg__mhjpj: 0
+	var_char__gwirg: 0
+func_readint_start__bedcn:
+	push var_x__afajo
+	push var_isneg__mhjpj
+	push var_char__gwirg
+	mov var_x__afajo 0
+	mov var_isneg__mhjpj 0
+	mov var_char__gwirg 0
+	mov var_x__afajo 0
+	mov var_isneg__mhjpj 0
+	mov var_char__gwirg 0
+	in var_char__gwirg
+	# if statement
+		# expr: char == 45
+			cmp var_char__gwirg 45
+			dec cr
+			not cr
+	jpz if_end__emynn cr
+		mov var_isneg__mhjpj 1
+		in var_char__gwirg
+	if_end__emynn:
+	# while loop
+	while_start__nihvz:
+		# expr: char >= 48 and char <= 57
+				cmp var_char__gwirg 48
+				norm cr
+			mov e2 cr
+				cmp 57 var_char__gwirg
+				norm cr
+			jpz land___ftwjh e2
+			mov e2 cr
+			land___ftwjh:
+	jpz while_end__fttni e2
+		mul var_x__afajo 10
+			# expr: char - 48
+				mov e0 var_char__gwirg
+				sub e0 48
+		add var_x__afajo e0
+		in var_char__gwirg
+	jp while_start__nihvz
+	while_end__fttni:
+	# if statement
+	jpz if_end__dwklf var_isneg__mhjpj
+		neg var_x__afajo
+	if_end__dwklf:
+	# return
+	mov rv var_x__afajo
+	jp func_readint_return__bedcn
+	func_readint_return__bedcn:
+	pop var_char__gwirg
+	pop var_isneg__mhjpj
+	pop var_x__afajo
+	ret rv
+func_readint_end__bedcn:
+# expr: println(str_hello_fi_instance__ngplp)
+	push _call_args
+	mov r0 1
+	call __malloc__
+	mov _call_args rv
+	# arg 0
+	set _call_args str_hello_fi_instance__ngplp
+	call func_println__qhpfo
+	mov e1 rv
+	mov r0 _call_args
+	call __free__
+	pop _call_args
+	# expr: readint()
+		push _call_args
+		mov _call_args __heap_empty_block__
+		call func_readint__bedcn
+		mov e2 rv
+		pop _call_args
+mov var_stop__wzkrb e2
+mov var_a__gvajq 1
+mov var_b__budsh 1
+# while loop
+while_start__hswei:
+	# expr: a < stop
+		cmp var_a__gvajq var_stop__wzkrb
+		not cr
+jpz while_end__pavtf cr
+	# expr: print(a, str_instance__jzhlx)
+		push _call_args
+		mov r0 2
+		call __malloc__
+		mov _call_args rv
+		# arg 0
+		set _call_args var_a__gvajq
+		inc _call_args
+		# arg 1
+		set _call_args str_instance__jzhlx
+		dec _call_args
+		call func_print__icpcm
+		mov e0 rv
+		mov r0 _call_args
+		call __free__
+		pop _call_args
+		# expr: a + b
+			mov e1 var_a__gvajq
+			add e1 var_b__budsh
+	mov var_c__lhcmu e1
+	mov var_a__gvajq var_b__budsh
+	mov var_b__budsh var_c__lhcmu
+jp while_start__hswei
+while_end__pavtf:
+end
+__heap__:
+__heap_data__: 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+__heap_end__:

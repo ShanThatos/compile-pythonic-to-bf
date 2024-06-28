@@ -1,0 +1,1 @@
+python .\launch.py -v -e -hs 1000 -o .\examples\primes\ .\examples\primes\code.bfun
