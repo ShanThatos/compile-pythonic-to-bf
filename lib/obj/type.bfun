@@ -1,0 +1,10 @@
+int: 
+func type(obj) {
+    getf r0 obj
+    if (r0 == 1) {
+        get obj obj
+        get obj obj
+        return obj
+    }
+    return int
+}

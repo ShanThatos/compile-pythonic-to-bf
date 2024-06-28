@@ -1,0 +1,18 @@
+jp __memcpy_end__
+__memcpy__:
+    while (r2) {
+        get r3 r0
+        set r1 r3
+        inc r0
+        inc r1
+        dec r2
+    }
+    ret 0
+__memcpy_end__:
+
+func memcpy(src, dst, size) {
+    mov r0 src
+    mov r1 dst
+    mov r2 size
+    call __memcpy__
+}

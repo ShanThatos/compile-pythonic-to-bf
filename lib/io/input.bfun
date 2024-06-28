@@ -1,0 +1,47 @@
+import "heap/realloc"
+
+func readchar() {
+    in r0
+    return r0
+}
+
+func readline() {
+    line = calloc(2)
+    i = 0
+    char = 0
+    while (1) {
+        in char
+        if (char == 10) break
+        if (i == line[-1]) {
+            line = realloc(line, line[-1] + 10)
+        }
+        line[i] = char
+        inc i
+    }
+
+    if (i == line[-1]) {
+        line = realloc(line, line[-1] + 1)
+    }
+    line[i] = 0
+    return str(line)
+}
+
+func readint() {
+    x = 0
+    isneg = 0
+    char = 0
+    in char
+    if (char == 45) {
+        isneg = 1
+        in char
+    }
+    while (char >= 48 and char <= 57) {
+        x *= 10
+        x += char - 48
+        in char
+    }
+    if (isneg) {
+        neg x
+    }
+    return x
+}

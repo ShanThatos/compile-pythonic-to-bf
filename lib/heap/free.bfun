@@ -1,0 +1,11 @@
+jp __free_end__
+__free__:
+    sub r0 2
+    set r0 0
+    ret 0
+__free_end__:
+
+func free(ptr) {
+    mov r0 ptr
+    call __free__
+}

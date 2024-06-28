@@ -1,0 +1,28 @@
+# r0 = object, r1 = name
+jp __findattr_end__
+__findattr_err__: 1
+__findattr__:
+    get r2 r0
+    while (1) {
+        inc r2
+        get r3 r2
+        if (r3) {
+            streq r1 r3
+            if (cr) {
+                # r0 + r2 - r0[0]
+                get r3 r0
+                add r0 r2
+                sub r0 r3
+                ret r0
+            }
+        } else break
+    }
+    if (__findattr_err__) {
+        out 69
+        out 65
+        end
+    }
+    ret 0
+__findattr_end__:
+
+

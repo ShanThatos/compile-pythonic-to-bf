@@ -1,0 +1,28 @@
+{
+    "expression_statement": ["expression"],
+    "expression": ["ONE_OF", ["e_assign", "e_lor"]],
+    
+    "e_assign": ["e_unit", "e_assign_op", "expression"],
+    "e_assign_op": ["ONE_OF", ["=", "+=", "-=", "*=", "/=", "%="]],
+
+    "e_lor": ["DELIMITER", ["e_land", "or"]],
+    "e_land": ["DELIMITER", ["e_rel", "and"]],
+
+    "e_rel": ["e_add", "OPTIONAL", [["ONE_OF", ["<", "<=", "==", "!=", ">=", ">"]], "e_add"]],
+    "e_add": ["DELIMITER", ["e_mul", ["ONE_OF", ["+", "-"]]]],
+    "e_mul": ["DELIMITER", ["e_neg", ["ONE_OF", ["*", "/", "%"]]]],
+    "e_neg": ["REPEAT", "-", "e_unit"],
+    "e_unit": ["ONE_OF", [
+        "e_not", "e_par", 
+        "REF", "NUMBER", 
+        "STRING"
+    ], "REPEAT", "e_ref"],
+    "e_not": ["!", "REPEAT", "!", "e_unit"],
+    "e_par": ["(", "expression", ")"],
+    "e_ref": ["ONE_OF", [
+        "e_index", "e_call", "e_dot"
+    ]],
+    "e_index": ["[", "expression", "]"],
+    "e_call": ["(", "OPTIONAL", ["DELIMITER", ["expression", ","]], ")"],
+    "e_dot": [".", "REF"]
+}

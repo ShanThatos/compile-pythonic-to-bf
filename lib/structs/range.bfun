@@ -1,0 +1,44 @@
+
+class range {
+    (__start = 0, __stop, __step = 1)
+
+    variadic func $new(args) {
+        num_args = args[-1]
+        if (num_args == 1) 
+            this.__stop = args[0]
+        else if (num_args == 2) {
+            this.__start = args[0]
+            this.__stop = args[1]
+        } else {
+            this.__start = args[0]
+            this.__stop = args[1]
+            this.__step = args[2]
+        }
+    }
+
+    func $iter() {
+        return range_iterator(this.__start, this.__stop, this.__step)
+    }
+}
+
+class range_iterator {
+    (__start, __stop, __step, __current)
+
+    func $new(__start, __stop, __step) {
+        this.__start = this.__current = __start
+        this.__stop = __stop
+        this.__step = __step
+    }
+
+    func $has_next() {
+        if (this.__step > 0)
+            return this.__current < this.__stop
+        return this.__current > this.__stop
+    }
+
+    func $next() {
+        val = this.__current
+        this.__current += this.__step
+        return val
+    }
+}

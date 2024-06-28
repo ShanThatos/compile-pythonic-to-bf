@@ -1,0 +1,13 @@
+{
+    "include": ["expression", "control"],
+    "all_statements": ["ONE_OF", [
+        "statement_block",
+        "if_statement",
+        "loop_statement",
+        "continue_statement",
+        "break_statement",
+        "return_statement",
+        "expression_statement"
+    ]],
+    "statement_block": ["{", "REPEAT", "statement", "}"]
+}

@@ -1,0 +1,40 @@
+__$item_str__: 
+__$item_str_db__: 5, 36, 105, 116, 101, 109, 0
+add __$item_str__ 2
+
+__$item_args__:
+__$item_args_arr_size__: 1
+__$item_args_arr_db__: 0
+add __$item_args__ 2
+
+jp __findindex_end__
+__findindex_obj__: 0
+__findindex_index__: 0
+__findindex__:
+    push __findindex_obj__
+    push __findindex_index__
+    mov __findindex_obj__ r0
+    mov __findindex_index__ r1
+    mov __findattr_err__ 0
+    mov r1 __$item_str__
+    call __findattr__
+    mov __findattr_err__ 1
+    if (rv) {
+        get rv rv
+        push _call_args
+        push __$item_args_arr_db__
+
+        mov __$item_args_arr_db__ __findindex_index__
+        mov _call_args __$item_args__
+        call rv
+        
+        pop __$item_args_arr_db__
+        pop _call_args
+    } else {
+        mov rv __findindex_obj__
+        add rv __findindex_index__
+    }
+    pop __findindex_index__
+    pop __findindex_obj__
+    ret rv
+__findindex_end__:

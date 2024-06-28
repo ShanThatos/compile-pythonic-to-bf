@@ -1,0 +1,21 @@
+{
+    "if_statement": [
+        "if", "(", "expression", ")", "statement", 
+        "OPTIONAL", [
+            "else", "statement"
+        ]
+    ],
+    "loop_statement": ["ONE_OF", [
+        "while_statement",
+        "for_statement"
+    ]],
+    "while_statement": [
+        "while", "(", "expression", ")", "statement"
+    ], 
+    "for_statement": [
+        "for", "(", "REF", "in", "expression", ")", "statement"
+    ],
+    "continue_statement": ["continue"],
+    "break_statement": ["break"],
+    "return_statement": ["return", "expression"]
+}

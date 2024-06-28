@@ -1,0 +1,184 @@
+{
+    "label": ["REF", ":", "OPTIONAL", ["DELIMITER", ["NUMBER", ","]]],
+    "label_array": ["REF", "[", "NUMBER", "]", ":"],
+
+    "dbg_ins": ["dbg"],
+
+    "noop_ins": ["noop"],
+    "end_ins": ["end"],
+    "jp_ins": ["jp", "REF"],
+    "jpif_ins": [
+        "ONE_OF", [
+            ["jpif", "REF", "REF"],
+            ["jpif", "REF", "NUMBER"]
+        ]
+    ],
+    "jpz_ins": [
+        "ONE_OF", [
+            ["jpz", "REF", "REF"],
+            ["jpz", "REF", "NUMBER"]
+        ]
+    ],
+    "call_ins": [
+        "ONE_OF", [
+            ["call", "REF"],
+            ["call", "NUMBER"]
+        ]
+    ],
+    "ret_ins": ["ret", "ONE_OF", [
+        "REF", "NUMBER"
+    ]],
+
+    "inc_ins": ["inc", "REF"],
+    "dec_ins": ["dec", "REF"],
+    "neg_ins": ["neg", "REF"],
+    "add_ins": [
+        "ONE_OF", [
+            ["add", "REF", "REF"],
+            ["add", "REF", "NUMBER"]
+        ]
+    ],
+    "sub_ins": [
+        "ONE_OF", [
+            ["sub", "REF", "REF"],
+            ["sub", "REF", "NUMBER"]
+        ]
+    ],
+    "mul_ins": [
+        "ONE_OF", [
+            ["mul", "REF", "REF"],
+            ["mul", "REF", "NUMBER"]
+        ]
+    ],
+
+    "lshift_ins": [
+        "ONE_OF", [
+            ["lshift", "REF", "REF"],
+            ["lshift", "REF", "NUMBER"]
+        ]
+    ],
+    "rshift_ins": [
+        "ONE_OF", [
+            ["rshift", "REF", "REF"],
+            ["rshift", "REF", "NUMBER"]
+        ]
+    ],
+
+    "norm_ins": ["norm", "REF"],
+    "not_ins": ["not", "REF"],
+    "zcmp_ins": [
+        "ONE_OF", [
+            ["zcmp", "REF"],
+            ["zcmp", "NUMBER"]
+        ]
+    ],
+    "cmp_ins": [
+        "ONE_OF", [
+            ["cmp", "REF", "REF"],
+            ["cmp", "NUMBER", "REF"],
+            ["cmp", "REF", "NUMBER"],
+            ["cmp", "NUMBER", "NUMBER"]
+        ]
+    ],
+    "streq_ins": ["streq", "REF", "REF"],
+
+    "mov_ins": [
+        "ONE_OF", [
+            ["mov", "REF", "REF"],
+            ["mov", "REF", "NUMBER"]
+        ]
+    ],
+    "getf_ins": ["getf", "REF", "REF"],
+    "setf_ins": [
+        "ONE_OF", [
+            ["setf", "REF", "REF"],
+            ["setf", "REF", "NUMBER"]
+        ]
+    ],
+    "get_ins": ["get", "REF", "REF"],
+    "set_ins": [
+        "ONE_OF", [
+            ["set", "REF", "REF"],
+            ["set", "REF", "NUMBER"]
+        ]
+    ],
+
+    "push_ins": [
+        "ONE_OF", [
+            ["push", "REF"],
+            ["push", "NUMBER"]
+        ]
+    ],
+    "pop_ins": ["pop", "REF"],
+
+    "out_ins": [
+        "ONE_OF", [
+            ["out", "REF"],
+            ["out", "NUMBER"]
+        ]
+    ],
+    "in_ins": ["in", "REF"],
+    "outnum_ins": [
+        "ONE_OF", [
+            ["outnum", "REF"],
+            ["outnum", "NUMBER"]
+        ]
+    ],
+    "outstr_ins": ["outstr", "REF"],
+
+    "instruction": [
+        "ONE_OF", [
+            "dbg_ins",
+
+            "noop_ins",
+            "end_ins",
+
+            "jp_ins",
+            "jpif_ins",
+            "jpz_ins",
+            "call_ins",
+            "ret_ins",
+
+            "inc_ins",
+            "dec_ins",
+            "neg_ins",
+            "add_ins",
+            "sub_ins",
+            "mul_ins",
+
+            "lshift_ins",
+            "rshift_ins",
+
+            "norm_ins",
+            "not_ins",
+            "zcmp_ins",
+            "cmp_ins",
+            "streq_ins",
+
+            "mov_ins",
+            "getf_ins",
+            "setf_ins",
+            "get_ins",
+            "set_ins",
+
+            "push_ins",
+            "pop_ins",
+
+            "out_ins",
+            "in_ins",
+            "outnum_ins",
+            "outstr_ins"
+        ]
+    ],
+
+    "asm": [
+        "ONE_OF", [
+            "COMMENT",
+            "label",
+            "label_array",
+            "instruction"
+        ]
+    ],
+
+    "multi_asm": ["DELIMITER", [["FORWARD", "asm"], ["PASS", ";"]]]
+}

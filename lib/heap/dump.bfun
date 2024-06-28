@@ -1,0 +1,28 @@
+jp __dump_end__
+__dump__:
+    out 10
+    out 10
+    mov r1 __heap__
+    mov r3 0
+    while (r1 < __heap_end__) {
+        get r2 r1
+        mov r0 r2
+        push r1
+        push r3
+        outnum r0
+        pop r3
+        pop r1
+        out 32
+        inc r1
+        inc r3
+        if (r3 == 10) {
+            out 10
+            mov r3 0
+        }
+    }
+    ret 0
+__dump_end__:
+
+func dump() {
+    call __dump__
+}

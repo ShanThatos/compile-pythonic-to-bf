@@ -1,0 +1,68 @@
+import "heap/memcpy"
+import "heap/realloc"
+
+class list {
+    (__arr, __size)
+
+    variadic func $new(args) {
+        this.__size = args[-1]
+        this.__arr = calloc(this.__size)
+        if (this.__size)
+            memcpy(args, this.__arr, this.__size)
+    }
+
+    func $len() {
+        return this.__size
+    }
+
+    func append(el) {
+        if (this.__size == this.__arr[-1]) {
+            this.__arr = realloc(this.__arr, this.__size * 2 + 5)
+        }
+        this.__arr[this.__size] = el
+        this.__size += 1
+    }
+
+    func $item(idx) {
+        return this.__arr + (idx % this.__size)
+    }
+
+    func $iter() {
+        return list_iterator(this)
+    }
+
+    func $print() {
+        i = 0
+        size = this.__size
+        out 91
+        while (size) {
+            print(this.__arr[i])
+            inc i
+            if (i != size) {
+                out 44
+                out 32
+            } else break
+        }
+        out 93
+    }
+}
+
+class list_iterator {
+    (__$len, __$item, __idx = 0)
+
+    func $new(__list) {
+        this.__$len = __list.$len
+        this.__$item = __list.$item
+    }
+
+    func $has_next() {
+        return this.__idx < this.__$len()
+    }
+
+    func $next() {
+        el = this.__$item(this.__idx)
+        get el el
+        this.__idx += 1
+        return el
+    }
+}

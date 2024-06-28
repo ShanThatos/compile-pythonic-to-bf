@@ -1,0 +1,10 @@
+{
+    "class_def": [
+        "class", "REF", "{",
+            "OPTIONAL", ["(", "DELIMITER", ["class_field", ","], ")"],
+            "REPEAT", "class_function",
+        "}"
+    ],
+    "class_field": ["REF", "OPTIONAL", ["=", "expression"]],
+    "class_function": ["FORWARD", "function"]
+}

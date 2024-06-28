@@ -1,0 +1,13 @@
+# Essentials required for high-level language features
+
+import "./heap/malloc"
+import "./heap/free"
+import "./obj/attr"
+import "./obj/item"
+import "./obj/caller"
+import "./obj/dunders"
+import "./io/print"
+import "./math/divmod"
+import "./structs/string"
+
+# ~~~AFTERCOMMON~~~

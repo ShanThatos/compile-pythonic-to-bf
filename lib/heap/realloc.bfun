@@ -1,0 +1,20 @@
+import "./memcpy"
+
+func realloc(ptr, size) {
+    mov r0 size
+    call __malloc__
+    new_ptr = rv
+    mov r0 ptr
+    mov r1 new_ptr
+    mov r2 size
+    orig_size = r0
+    dec orig_size
+    get orig_size orig_size
+    if (r2 < orig_size) {
+        r2 = orig_size
+    }
+    call __memcpy__
+    mov r0 ptr
+    call __free__
+    return new_ptr
+}

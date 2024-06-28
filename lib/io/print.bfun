@@ -1,0 +1,54 @@
+jp __print_end__
+    __print_args__: 0
+    __print_num_args__: 0
+__print__:
+    push __print_num_args__
+    dec __print_args__
+    get __print_num_args__ __print_args__
+    while (__print_num_args__) {
+        inc __print_args__
+        get r0 __print_args__
+        getf cr r0
+        dec cr
+        not cr
+        if (cr) {
+            mov __findattr_err__ 0
+            r1 = r0.$print
+            mov __findattr_err__ 1
+            if (r1) {
+                r1()
+            } else {
+                get r0 __print_args__
+                outnum r0
+                out 69
+                out 80
+                end
+            }
+        } else {
+            outnum r0
+        }
+
+        dec __print_num_args__
+        if (__print_num_args__) 
+            out 32
+    }
+    pop __print_num_args__
+    ret 0
+__print_end__:
+
+variadic func print(args) {
+    # __print(args)
+    push __print_args__
+    mov __print_args__ args
+    call __print__
+    pop __print_args__
+}
+
+variadic func println(args) {
+    # __print(args)
+    push __print_args__
+    mov __print_args__ args
+    call __print__
+    pop __print_args__
+    out 10
+}

@@ -1,0 +1,9 @@
+/.venv/
+/.vscode/
+__pycache__/
+
+/c2bf-build/
+
+# pyinstaller dirs
+/build/
+/dist/

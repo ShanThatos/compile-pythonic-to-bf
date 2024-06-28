@@ -1,0 +1,17 @@
+class str {
+    (__arr)
+
+    func $new(arr) {
+        this.__arr = arr
+    }
+
+    func $len() {
+        return this.__arr[-1]
+    }
+
+    func $print() {
+        arr = this.__arr
+        outstr arr
+    }
+}
+

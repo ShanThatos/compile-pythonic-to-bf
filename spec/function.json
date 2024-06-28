@@ -1,0 +1,7 @@
+{
+    "function_params": ["OPTIONAL", ["DELIMITER", ["REF", ","]]],
+    "function": [
+        "OPTIONAL", "variadic",
+        "func", "REF", "(", "function_params", ")", "statement"
+    ]
+}

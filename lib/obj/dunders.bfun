@@ -1,0 +1,18 @@
+
+# $new, $len, $iter, $has_next, $next, $print, $item
+
+func len(obj) {
+    return obj.$len()
+}
+
+func iter(obj) {
+    return obj.$iter()
+}
+
+func has_next(obj) {
+    return obj.$has_next()
+}
+
+func next(obj) {
+    return obj.$next()
+}

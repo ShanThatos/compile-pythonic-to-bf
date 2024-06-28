@@ -1,0 +1,41 @@
+jp __divmod_end__
+__divmod__:
+    # args: r0, r1
+    rv = 0
+    if (r0 < 0) {
+        neg r0
+        not rv
+    }
+    if (r1 < 0) {
+        neg r1
+        not rv
+    }
+
+    r2 = 1
+    while (r0 > r1) {
+        lshift r1 1
+        lshift r2 1
+    }
+
+    r3 = 0
+    while (r2) {
+        if (r0 >= r1) {
+            sub r0 r1
+            add r3 r2
+        } else {
+            rshift r2 1
+            if (r2)
+                rshift r1 1
+        }
+    }
+
+    if (rv) {
+        neg r3
+        if (r0) {
+            neg r0
+            add r0 r1
+        }
+    }
+    
+    ret r3
+__divmod_end__:

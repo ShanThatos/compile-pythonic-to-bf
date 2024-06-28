@@ -1,0 +1,125 @@
+__heap_empty_block_metadata__: 0, 0
+__heap_empty_block__: 
+__heap_metadata_size__: 2 # <taken, size>
+
+inc __heap__
+mov __heap_guess__ __heap__
+
+jp __malloc_end__
+__heap_guess__: 0
+__heap_circled__: 0
+__malloc__:
+    # r0: size
+    # r1: heap_ptr
+    # r2: heap_element
+
+    if (r0 <= 0) 
+        ret __heap_empty_block__
+
+    mov r1 __heap_guess__
+    mov __heap_circled__ 0
+
+    __malloc_loop__:
+        get r2 r1
+        
+        # check block taken
+        if (r2) {
+            inc r1
+            get r2 r1
+            add r1 r2
+            inc r1
+            jp __malloc_loop_continue__
+        }
+
+        mov __heap_guess__ r1
+
+        inc r1
+
+        while (1) {
+            get r2 r1
+
+            mov rv r1
+            add rv r2
+            inc rv
+            get rv rv
+            if (rv) break
+            
+            mov rv r1
+            add rv r2
+            add rv 2
+            get rv rv
+            
+            add rv __heap_metadata_size__
+            add rv r2
+            set r1 rv
+        }
+
+        # check not enough space
+        if (r0 + __heap_metadata_size__ > r2) {
+            add r1 r2
+            inc r1
+            jp __malloc_loop_continue__
+        }
+
+        # mark block as taken
+        dec r1
+        set r1 1
+        
+        # check size match
+        if (r0 == r2) {
+            add r1 2
+            ret r1
+        }
+
+        # split block
+        
+        # set block size
+        inc r1
+        set r1 r0
+
+        # move to next block
+        inc r1
+        mov rv r1
+        add r1 r0
+
+        # mark block metadata
+        set r1 0
+        inc r1
+        sub r2 r0
+        sub r2 __heap_metadata_size__
+        set r1 r2
+
+        ret rv
+
+        __malloc_loop_continue__:
+            if (r1 >= __heap_end__) {
+                if (__heap_circled__)
+                    jp __malloc_loop_end__
+                mov r1 __heap__
+                mov __heap_circled__ 1
+            }
+            jp __malloc_loop__
+    __malloc_loop_end__:
+    
+    out 69
+    out 77
+    end
+__malloc_end__:
+
+func malloc(size) {
+    mov r0 size
+    call __malloc__
+    return rv
+}
+
+func calloc(size) {
+    mov r0 size
+    call __malloc__
+    mov r1 rv
+    mov r0 size
+    while (r0) {
+        set r1 0
+        inc r1
+        dec r0
+    }
+}
