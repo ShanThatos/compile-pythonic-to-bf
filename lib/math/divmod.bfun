@@ -1,6 +1,8 @@
 jp __divmod_end__
+__divmod_r1_neg__: 0
 __divmod__:
     # args: r0, r1
+    mov __divmod_r1_neg__ 0
     rv = 0
     if (r0 < 0) {
         neg r0
@@ -9,6 +11,7 @@ __divmod__:
     if (r1 < 0) {
         neg r1
         not rv
+        mov __divmod_r1_neg__ 1
     }
 
     r2 = 1
@@ -34,7 +37,11 @@ __divmod__:
         if (r0) {
             neg r0
             add r0 r1
+            dec r3
         }
+    }
+    if (__divmod_r1_neg__) {
+        neg r0
     }
     
     ret r3
