@@ -45,6 +45,10 @@ class list {
         }
         out 93
     }
+
+    func clear() {
+        this.__size = 0
+    }
 }
 
 class list_iterator {

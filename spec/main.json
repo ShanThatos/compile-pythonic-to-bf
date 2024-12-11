@@ -2,7 +2,7 @@
     "include": ["bfasm", "statement/all", "function", "class"],
 
     "COMMENT": ["REGEX_MATCH", [0, "(#[^\\n]*)(?=\\n|$)"]],
-    "IMPORT": ["REGEX_MATCH", [1, "(import \"[^\\n\"]*\")(?=\\n)"]],
+    "IMPORT": ["REGEX_MATCH", [1, "(import \"[^\\n\"]*\")"]],
     "REF": ["REGEX_MATCH", [2, "([_a-zA-Z$][_a-zA-Z$0-9]*)\\b"]],
     "NUMBER": ["REGEX_MATCH", [3, "([0-9]+)\\b"]],
     "STRING": ["REGEX_MATCH", [4, "\"(([^\"\\\\\\n\\t]|(\\\\[\\\\\"nt]))*)\""]],

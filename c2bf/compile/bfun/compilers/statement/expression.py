@@ -53,10 +53,11 @@ ASSIGN_OP_MAP = {
 def compile_assign(ast: ASTNode) -> ExprCompileResult:
     unit = ast.get("e_unit")
     refs = unit.get_all("e_ref")
-    op_ins = ASSIGN_OP_MAP.get(ast.get("e_assign_op")[0].literal.value, None)
+    assign_op = ast.get("e_assign_op")[0].literal.value
+    op_ins = ASSIGN_OP_MAP.get(assign_op, None)
 
     if not op_ins:
-        raise Exception(f"Unsupported assignment operator {op_ins}")
+        raise Exception(f"Unsupported assignment operator {assign_op}")
 
     code, regs, const = compile_expression(ast.get("expression"))
 

@@ -31,6 +31,9 @@ func readint() {
     isneg = 0
     char = 0
     in char
+    while (char == 32 or char == 10) {
+        in char
+    }
     if (char == 45) {
         isneg = 1
         in char

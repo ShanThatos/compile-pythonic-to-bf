@@ -20,6 +20,7 @@ __findattr__:
     if (__findattr_err__) {
         out 69
         out 65
+        outstr r1
         end
     }
     ret 0
